@@ -2,32 +2,31 @@ from django.db import models
 
 class InvoiceQuerySet(models.QuerySet):
     def paid(self):
-        """Retourne toutes les factures payées."""
+        """Returns all paid invoices."""
         return self.filter(is_paid=True)
 
     def unpaid(self):
-        """Retourne toutes les factures impayées."""
+        """Returns all unpaid invoices."""
         return self.filter(is_paid=False)
 
     def recent(self):
-        """Retourne les factures triées par date de création, de la plus récente à la plus ancienne."""
+        """Returns invoices sorted by creation date, from most recent to oldest."""
         return self.order_by('-date_created')
     
 
 class InvoiceManager(models.Manager):
     def get_queryset(self):
-        """Utilise le QuerySet personnalisé."""
+        """Uses the custom QuerySet."""
         return InvoiceQuerySet(self.model, using=self._db)
 
     def paid(self):
-        """Raccourci pour obtenir les factures payées."""
+        """Shortcut to get paid invoices."""
         return self.get_queryset().paid()
 
     def unpaid(self):
-        """Raccourci pour obtenir les factures impayées."""
+        """Shortcut to get unpaid invoices."""
         return self.get_queryset().unpaid()
 
     def recent(self):
-        """Raccourci pour obtenir les factures récentes."""
+        """Shortcut to get recent invoices."""
         return self.get_queryset().recent()
-
