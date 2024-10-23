@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    {% if user.is_authenticated %}
+        <h1 class="mb-4">Welcome {{ user.username }} to the Invoice Management System</h1>
+        <p class="lead">This is a simple invoice management system. You can create, edit, and delete invoices. You can also create categories for your invoices.</p>
+    {% else %}
+        <p class="lead">Welcome, Guest! Please <a href="{% url 'login' %}">login</a> to continue.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Delete Client{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Confirm Delete</h1>
+    <p>Are you sure you want to delete <strong>{{ client.name }}</strong>?</p>
+    <form method="post" class="mb-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirm</button>
+        <a href="{% url 'client_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

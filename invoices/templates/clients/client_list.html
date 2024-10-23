@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Client List{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Clients</h1>
+    
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.name }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.phone }}</td>
+                <td>
+                    {% if perms.invoices.view_client %}
+                        <a href="{% url 'client_detail' client.pk %}" class="btn btn-info btn-sm">View Details</a>
+                    {% else %}
+                        <button class="btn btn-info btn-sm" disabled>View Details</button>
+                    {% endif %}
+
+                    {% if perms.invoices.change_client %}
+                        <a href="{% url 'edit_client' client.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                    {% else %}
+                        <button class="btn btn-warning btn-sm" disabled>Edit</button>
+                    {% endif %}
+                    
+                    {% if perms.invoices.delete_client %}
+                        <form method="post" action="{% url 'delete_client' client.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    {% else %}
+                        <button class="btn btn-danger btn-sm" disabled>Delete</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">No clients available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    {% if perms.invoices.add_client %}
+        <a href="{% url 'create_client' %}" class="btn btn-primary">Create New Client</a>
+    {% else %}
+        <button class="btn btn-primary" disabled>Create New Client</button>
+    {% endif %}
+</div>
+{% endblock %}

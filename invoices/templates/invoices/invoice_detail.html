@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Invoice Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{{ invoice.title }}</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Invoice Details</h5>
+            <p class="card-text"><strong>Amount:</strong> {{ invoice.amount }} €</p>
+            <p class="card-text"><strong>Category:</strong> {{ invoice.category.name|default:"No Category" }}</p>
+            <p class="card-text"><strong>Date Created:</strong> {{ invoice.date_created|date:"d/m/Y" }}</p>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="{% url 'edit_invoice' invoice.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'invoice_list' %}" class="btn btn-secondary">Back to list</a>
+    </div>
+</div>
+{% endblock %}
