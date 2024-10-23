@@ -40,8 +40,8 @@ class InvoiceListView(ListView):
     def get_queryset(self):
         client_id = self.request.GET.get('client')
         if client_id:
-            return Invoice.objects.filter(client_id=client_id).order_by('-date_created')
-        return Invoice.objects.all().order_by('-date_created')
+            return Invoice.objects.filter(client_id=client_id).recent()
+        return Invoice.objects.recent()
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -1,6 +1,9 @@
 from django.db import models
 from django.core.validators import MinValueValidator, EmailValidator
+from django.utils import timezone
+from django.contrib.auth.models import User
 from .validators import validate_french_phone_number
+from .managers import InvoiceManager
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="Category Name")
@@ -48,6 +51,8 @@ class Invoice(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="Category", null=True, blank=True, related_name="invoices")
     client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name="Client", related_name="invoices") 
 
+    objects = InvoiceManager()
+    
     def __str__(self):
         return f"Invoice: {self.title} - {self.formatted_amount()}"
 
@@ -58,3 +63,11 @@ class Invoice(models.Model):
         verbose_name = "Invoice"
         verbose_name_plural = "Invoices"
         ordering = ['-date_created']
+
+class UserConnectionLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ip_address = models.GenericIPAddressField()
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.ip_address} at {self.timestamp}"

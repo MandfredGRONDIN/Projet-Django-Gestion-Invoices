@@ -1,14 +1,11 @@
 from django.contrib import admin
-from .models import Invoice, Client, Category
+from .models import Invoice, Client, Category, UserConnectionLog  
 
 @admin.register(Invoice)
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('title', 'client', 'amount', 'category', 'is_paid', 'date_created', 'due_date')
-
     search_fields = ('title', 'client__name') 
-
     list_filter = ('client', 'is_paid', 'category')  
-
     actions = ['mark_as_paid', 'mark_as_unpaid'] 
 
     def mark_as_paid(self, request, queryset):
@@ -22,5 +19,18 @@ class InvoiceAdmin(admin.ModelAdmin):
     mark_as_paid.short_description = "Mark selected invoices as paid"
     mark_as_unpaid.short_description = "Mark selected invoices as unpaid"
 
-admin.site.register(Client)
-admin.site.register(Category)
+@admin.register(Client)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'phone') 
+    search_fields = ('name', 'email')  
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description') 
+    search_fields = ('name',)  
+
+@admin.register(UserConnectionLog)
+class UserConnectionLogAdmin(admin.ModelAdmin):
+    list_display = ('user', 'ip_address', 'timestamp') 
+    search_fields = ('user__username', 'ip_address')  
+    list_filter = ('user',)  
