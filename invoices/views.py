@@ -84,15 +84,12 @@ class InvoiceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
     model = Invoice
     template_name = 'invoices/invoice_confirm_delete.html'
     success_url = reverse_lazy('invoice_list')
-
     permission_required = 'invoices.delete_invoice'
 
-    def get(self, request, *args, **kwargs):
-        return self.render_to_response(self.get_context_data())
-
     def post(self, request, *args, **kwargs):
+        """Delete the object and redirect to success_url."""
         self.object = self.get_object()
-        self.object.delete()
+        self.object.delete() 
         return redirect(self.success_url)
 
 class InvoiceDetailView(DetailView):

@@ -52,6 +52,10 @@ createsuperuser:
 run: 
 	${COMPOSE} up
 
+# Commande pour lancer les tests Django
+test:
+	${COMPOSE} run invoices python manage.py test
+
 ###############################################################################
 # Clean up
 ###############################################################################
