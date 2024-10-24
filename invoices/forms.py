@@ -1,56 +1,35 @@
 from django import forms
-from .models import Invoice, Category, Client
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from .models import Invoice, InvoiceItem
 
 class InvoiceForm(forms.ModelForm):
     class Meta:
         model = Invoice
-        fields = ['title', 'amount', 'due_date', 'is_paid', 'notes', 'category', 'client'] 
+        fields = [
+            'title', 'invoice_number', 'transaction_id', 'amount', 'due_date', 'is_paid', 
+            'billing_frequency', 'payment_method', 'notes', 'category', 'client', 'vat_rate'
+        ]
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter invoice title'}),
+            'invoice_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter invoice number'}),
+            'transaction_id': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter transaction ID'}),
             'amount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter amount'}),
             'due_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'is_paid': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'billing_frequency': forms.Select(attrs={'class': 'form-control'}),
+            'payment_method': forms.Select(attrs={'class': 'form-control'}),
             'notes': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Additional notes'}),
             'category': forms.Select(attrs={'class': 'form-control'}),
             'client': forms.Select(attrs={'class': 'form-control'}),
+            'vat_rate': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'VAT rate'}),
         }
 
-class ClientForm(forms.ModelForm):
+class InvoiceItemForm(forms.ModelForm):
     class Meta:
-        model = Client
-        fields = ['name', 'email', 'phone', 'address']
+        model = InvoiceItem
+        fields = ['description', 'unit_price', 'quantity', 'discount']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter client name'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter client email'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter client phone'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter client address'}),
+            'description': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter item description'}),
+            'unit_price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter unit price'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter quantity'}),
+            'discount': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter discount amount'}),
         }
-
-class CategoryForm(forms.ModelForm):
-    class Meta:
-        model = Category
-        fields = ['name', 'description']
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter category name'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Enter category description'}),
-        }
-
-class UserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    confirm_password = forms.CharField(widget=forms.PasswordInput, label='Confirm Password')
-
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password', 'confirm_password']
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password = cleaned_data.get("password")
-        confirm_password = cleaned_data.get("confirm_password")
-
-        if password != confirm_password:
-            raise ValidationError("Les mots de passe ne correspondent pas.")
-
-        return cleaned_data

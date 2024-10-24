@@ -1,6 +1,5 @@
 from django.utils.deprecation import MiddlewareMixin
 from .models import UserConnectionLog
-import logging
 
 class UserConnectionMiddleware(MiddlewareMixin):
     def process_request(self, request):
