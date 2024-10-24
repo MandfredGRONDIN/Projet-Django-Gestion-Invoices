@@ -91,7 +91,7 @@ class InvoiceUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView)
             return super().form_valid(form)
         else:
             print("Invoice items are not valid.")
-            print(invoice_items.errors)  # Affiche les erreurs du formset dans la console
+            print(invoice_items.errors)  
             return self.form_invalid(form)
  
 class InvoiceDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
