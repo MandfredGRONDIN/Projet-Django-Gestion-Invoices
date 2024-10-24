@@ -16,6 +16,10 @@ class InvoiceItem(models.Model):
         """Calcul du prix total pour l'élément de la facture, tenant compte de la réduction."""
         return (self.unit_price * self.quantity) - self.discount
 
+    def total_price_without_discount(self):
+        """Calcul du prix total pour l'élément de la facture, tenant compte de la réduction."""
+        return (self.unit_price * self.quantity)
+    
     def __str__(self):
         return f"{self.description} - {self.total_price()} €"
 
@@ -44,6 +48,11 @@ class Invoice(models.Model):
         """Calcule le sous-total de la facture avant TVA."""
         return sum(item.total_price() for item in self.items.all())
 
+    def calculate_vat_amount(self):
+        """Calcule la TVA à partir du sous-total et du taux de TVA."""
+        subtotal = self.calculate_subtotal()
+        return (subtotal * self.vat_rate) / 100
+        
     def calculate_total(self):
         """Calcule le montant total de la facture, y compris la TVA."""
         subtotal = self.calculate_subtotal()

@@ -4,13 +4,22 @@
 
 {% block content %}
 <h1>{{ form.instance.pk|yesno:"Edit an Invoice,Create an Invoice" }}</h1>
-
 <form method="POST">
     {% csrf_token %}
     
     <div class="mb-3">
         <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label> 
         {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.invoice_number.id_for_label }}" class="form-label">{{ form.invoice_number.label }}</label>
+        {{ form.invoice_number }}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.transaction_id.id_for_label }}" class="form-label">{{ form.transaction_id.label }}</label>
+        {{ form.transaction_id }}
     </div>
 
     <div class="mb-3">
@@ -29,6 +38,16 @@
     </div>
 
     <div class="mb-3">
+        <label for="{{ form.billing_frequency.id_for_label }}" class="form-label">{{ form.billing_frequency.label }}</label>
+        {{ form.billing_frequency }}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.payment_method.id_for_label }}" class="form-label">{{ form.payment_method.label }}</label>
+        {{ form.payment_method }}
+    </div>
+
+    <div class="mb-3">
         <label for="{{ form.notes.id_for_label }}" class="form-label">{{ form.notes.label }}</label>
         {{ form.notes }}
     </div>
@@ -43,35 +62,74 @@
         {{ form.client }}
     </div>
 
+    <div class="mb-3">
+        <label for="{{ form.vat_rate.id_for_label }}" class="form-label">{{ form.vat_rate.label }}</label>
+        {{ form.vat_rate }}
+    </div>
+
     <h3>Invoice Items</h3>
-    {{ items.management_form }} 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Prix unitaire</th>
-                <th>Quantité</th>
-                <th>Total</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in items %}
-            <tr>
-                <td>{{ item.description }}</td>
-                <td>{{ item.unit_price }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.total_price }}</td>
-                <td>
-                    {% if item.id %}
-                    {{ item.DELETE }} Supprimer
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div id="invoice-items">
+        {{ invoice_items.management_form }}
+        {% for item_form in invoice_items %}
+            <div class="mb-3">
+                <h4>Item {{ forloop.counter }}</h4>
+                
+                {{ item_form.id }}
+                
+                <label for="{{ item_form.description.id_for_label }}" class="form-label">{{ item_form.description.label }}</label>
+                {{ item_form.description }}
+            </div>
+    
+            <div class="mb-3">
+                <label for="{{ item_form.unit_price.id_for_label }}" class="form-label">{{ item_form.unit_price.label }}</label>
+                {{ item_form.unit_price }}
+            </div>
+    
+            <div class="mb-3">
+                <label for="{{ item_form.quantity.id_for_label }}" class="form-label">{{ item_form.quantity.label }}</label>
+                {{ item_form.quantity }}
+            </div>
+    
+            <div class="mb-3">
+                <label for="{{ item_form.discount.id_for_label }}" class="form-label">{{ item_form.discount.label }}</label>
+                {{ item_form.discount }}
+            </div>
+    
+            {% if item_form.instance.pk %}
+                <div class="mb-3">
+                    <input type="checkbox" name="{{ item_form.prefix }}-DELETE" id="{{ item_form.prefix }}-DELETE" />
+                    <label for="{{ item_form.prefix }}-DELETE">Delete</label>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    
 
     <button type="submit" class="btn btn-primary">Save</button>
 </form>
+
+{% if invoice_items.non_form_errors %}
+    <div class="alert alert-danger">
+        <strong>There were errors with the invoice items:</strong>
+        <ul>
+        {% for error in invoice_items.non_form_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+{% for item_form in invoice_items %}
+    {% if item_form.errors %}
+        <div class="alert alert-danger">
+            <strong>Errors in Item {{ forloop.counter }}:</strong>
+            <ul>
+            {% for field, errors in item_form.errors.items %}
+                <li>{{ field }}: {{ errors|join:", " }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endfor %}
+
 {% endblock %}
